@@ -94,7 +94,7 @@ proc validation_helper {form_id} {
 
 In much the same way, this proc will replace writing out your script each time you set up validation on a form. This proc takes the id of the form as an argument, and then returns all the HTML you will need to set up validation on that form. Replace your validation scripts with the new proc, and then confirm your validation is still working correctly. Your pages should all now have consistent styling, and your code should be neater (and remain so as we continue to add more pages and forms).
 
-## Users
+## Creating users
 
 The first page we will need to implement our user system will be a form for new users to sign up. In your `url_handlers.tcl` file, add the following:
 
@@ -204,6 +204,8 @@ ALTER TABLE form
 Restart naviserver and refresh the form page, and try creating your user again. This time, you should see "Not found" - this means we have successfully created our new user (check your users table to confirm this) and been redirected to our new user's page, which does not yet have a path handler.
 
 Remember this error and how it is caused (and corrected), because it is likely you will encounter it again, and if you have forgotten what it means you will probably find the error message quite unhelpful.
+
+## Viewing and listing users
 
 Now that we can create users and be redirected to their user page, we should add the path handler for doing so:
 
