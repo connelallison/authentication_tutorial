@@ -155,9 +155,9 @@ register POST /users {firstname surname email password confirm_password} {
 }
 ```
 
-Here we pass the details submitted in the form to our  `user_create` proc which will be responsible for validating them, storing them in the database, and then returning the user_id of the newly created user. The path handler, assuming there were no issues with the data submitted, will then create a new session_id using the user_id, and store it (along with an authenticity token) in a cookie, logging the user into their new account, before redirecting them to their user page.
+Here we pass the details submitted in the form to our  `user_create` proc which will be responsible for validating them, storing them in the database, and then returning the user_id of the newly created user. The path handler, assuming there were no issues with the data submitted, will then create a new session_id using the user_id, and store it (along with an authenticity token) in a cookie, logging the user into their new account - before redirecting them to their new user page.
 
-Next we must add our `entry_create` proc. In a new file called `user.tcl`, place the following code:
+Next we must add our `user_create` proc. In a new file called `user.tcl`, place the following code:
 
 ```tcl
 proc user_create {firstname surname email password confirm_password} {
@@ -175,13 +175,15 @@ proc user_create {firstname surname email password confirm_password} {
 }
 ```
 
-Here we check to make sure that the two passwords the user submitted match, and that they meet certain complexity restrictions - for testing purposes, we are requiring that passwords be at least 4 and at most 20 characters long, and do not require a mix of character types. In practice, of course, this would be a very low standard of security and would permit some very weak passwords.
+Here we check to make sure that the two passwords the user submitted match, and that they meet certain complexity restrictions - for testing purposes, we are requiring that passwords be at least 4 and at most 20 characters long, and we do not require a mix of character types. In practice, of course, this would be a very low standard of security and would permit some dangerously weak passwords.
 
-After validating the password input, we use the `crypt` function in PostgreSQL's [pgcrypto](https://www.postgresql.org/docs/8.3/pgcrypto.html) module to create a hash. If you read through the [page on password hashing](https://security.blogoverflow.com/2013/09/about-secure-password-hashing/) that was linked earlier, you may be interested to know that we have specified bcrypt as our hashing algorithm.
+After validating the password input, we use the `crypt` function in PostgreSQL's [pgcrypto](https://www.postgresql.org/docs/8.3/pgcrypto.html) module to create a hash. If you read through the [article on password hashing](https://security.blogoverflow.com/2013/09/about-secure-password-hashing/) that was linked earlier, you may be interested to know that we have specified bcrypt as our hashing algorithm.
 
 Once we have the password hash, we insert it into the database along with the email and the first and last name. Provided that the email is not associated with an existing user, the new user should be successfully created, and the user_id returned to the path handler so that the new user can be logged in.
 
-Now that we have written our path handlers and our proc, try creating a new user. It should fail, and if you check your logs you will find a long and somewhat unhelpful error, which begins with something along the lines of "App:Error: can't read "column": no such variable".
+Now that we have written our path handlers and our proc, try creating a new user. It should fail, and if you check your logs you will find a long and somewhat unhelpful error, which begins with something along the lines of:
+
+`App:Error: can't read "column": no such variable.`
 
 To fix this, we must return to our database and make some further changes. You may recall that in the [Validation against the data model tutorial](tutorial-4-validation.md), you ran the following code:
 
@@ -207,7 +209,7 @@ Remember this error and how it is caused (and corrected), because it is likely y
 
 ## Viewing and listing users
 
-Now that we can create users and be redirected to their user page, we should add the path handler for doing so:
+Now that we can create users and be redirected to their user page, we should add its path handler:
 
 ```tcl
 register GET /users/:user_id {user_id} {
