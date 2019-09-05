@@ -1,0 +1,5 @@
+- Review OWASP documents concerning authentication, sessions, and security
+- Allow user to register (new user form)
+- Allow user to login (login form)
+- Record owner and/or creator of blogpost on creation
+- Display name of author on blog posts
