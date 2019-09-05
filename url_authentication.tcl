@@ -2,7 +2,6 @@ register GET /entries/new {} {
     #| Form for submitting new blog entry
     set html ""
     append html [imports_helper]
-
     append html [user_status]
     set form ""
     append form [h label "Blog Title:"]
@@ -117,8 +116,6 @@ register GET /users/new {} {
 	append form [h br]
 	append form [h br]    
 	append form [h input type submit name submit value Submit]
-	append form [h br]
-	append form [h br]  
 
 	append html [qc::form id "new-user-form" method POST action /users $form]
 	append html [validation_helper "new-user-form"]
@@ -130,14 +127,13 @@ register GET /users/new {} {
 
 
 
-register POST /users {users.firstname users.surname users.email form.password form.confirm_password} {
+register POST /users {firstname surname email password confirm_password} {
     #| Create a new user
     set user_id [user_create $firstname $surname $email $password $confirm_password]
     set session_id [session_new $user_id]
     cookie_set session_id $session_id
     cookie_set authenticity_token [session_authenticity_token $session_id] http_only false    
-    qc::response action redirect [qc::url "/users/$user_id"] 
-    
+    qc::response action redirect [qc::url "/users/$user_id"]  
 }
 
 register GET /users/:user_id {user_id} {
@@ -186,7 +182,6 @@ register GET /users/:user_id/edit {user_id} {
 	append form [h br]    
 	append form [h br]
 	append form [h input type submit name submit value Update]
-	append form [h br]  
 
 	append html [qc::form id "update-user-form" method PUT action "/users/$user_id" $form]
 	append html [validation_helper "update-user-form"]
@@ -229,7 +224,6 @@ register GET /users/:user_id/password/edit {user_id} {
 	append form [h br]    
 	append form [h br]
 	append form [h input type submit name submit value Update]
-	append form [h br]  
 
 	append html [qc::form id "update-password-form" method PUT action "/users/$user_id/password" $form]
 	append html [validation_helper "update-password-form"]
